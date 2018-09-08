@@ -136,8 +136,8 @@ class VEML6075:
         # Equasion 1 & 2 in App note, without 'golden sample' calibration
         self._uvacalc = uva - (self._a * uvcomp1) - (self._b * uvcomp2)
         self._uvbcalc = uvb - (self._c * uvcomp1) - (self._d * uvcomp2)
-        print("UVA = %d, UVB = %d, UVcomp1 = %d, UVcomp2 = %d, Dark = %d" %
-              (uva, uvb, uvcomp1, uvcomp2, dark))
+        #print("UVA = %d, UVB = %d, UVcomp1 = %d, UVcomp2 = %d, Dark = %d" %
+        #      (uva, uvb, uvcomp1, uvcomp2, dark))
 
     @property
     def uva(self):
