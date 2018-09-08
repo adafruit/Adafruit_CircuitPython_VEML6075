@@ -80,7 +80,7 @@ class VEML6075:
                          options - each in milliseconds: 50, 100, 200, 400, 800.
                          The higher the '_x_' value, the more accurate
                          the reading is (at the cost of less samples per reading).
-                         Defaults to 50ms if parameter not passed. To change
+                         Defaults to 100ms if parameter not passed. To change
                          setting after intialization, use
                          ``[veml6075].integration_time = new_it_value``.
     :param bool high_dynamic: whether to put sensor in 'high dynamic setting' mode
