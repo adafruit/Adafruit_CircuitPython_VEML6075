@@ -13,7 +13,7 @@ Introduction
     :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_VEML6075
     :alt: Build Status
 
-.. todo:: Describe what the library does.
+CircuitPython library to support VEML6075 UVA & UVB sensor.
 
 Dependencies
 =============
@@ -21,7 +21,6 @@ This driver depends on:
 
 * `Adafruit CircuitPython <https://github.com/adafruit/circuitpython>`_
 * `Bus Device <https://github.com/adafruit/Adafruit_CircuitPython_BusDevice>`_
-* `Register <https://github.com/adafruit/Adafruit_CircuitPython_Register>`_
 
 Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
@@ -30,7 +29,20 @@ This is easily achieved by downloading
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
+.. code-block:: python
+
+	import time
+	import board
+	import busio
+	import adafruit_veml6075
+
+	i2c = busio.I2C(board.SCL, board.SDA)
+
+	veml = adafruit_veml6075.VEML6075(i2c, integration_time=100)
+
+	while True:
+	    print(veml.uv_index)
+	    time.sleep(1)
 
 Contributing
 ============

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-`Adafruit_VEML6075`
+`adafruit_veml6075`
 ====================================================
 
 CircuitPython library to support VEML6075 UVA & UVB sensor.
@@ -158,7 +158,8 @@ class VEML6075:
 
     @property
     def integration_time(self):
-        """The amount of time the VEML is sampling data for, in millis"""
+        """The amount of time the VEML is sampling data for, in millis.
+        Valid times are 50, 100, 200, 400 or 800ms"""
         key = (self._read_register(_REG_CONF) >> 4) & 0x7
         for k, val in enumerate(_VEML6075_UV_IT):
             if key == k:
@@ -167,8 +168,6 @@ class VEML6075:
 
     @integration_time.setter
     def integration_time(self, val):
-        """Set how long the VEML samples data.
-        Can be 50, 100, 200, 400 or 800ms"""
         if not val in _VEML6075_UV_IT.keys():
             raise RuntimeError("Invalid integration time")
         conf = self._read_register(_REG_CONF)
