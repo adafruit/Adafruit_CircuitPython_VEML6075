@@ -32,14 +32,11 @@ Implementation Notes
 
 **Hardware:**
 
-.. todo:: Add links to any specific hardware product page(s), or category page(s). Use unordered list & hyperlink rST
-   inline format: "* `Link Text <url>`_"
-
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
-  
+
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 
 """
@@ -103,7 +100,8 @@ class VEML6075:
         self._d = uvb_d_coef
         self._uvaresp = uva_response
         self._uvbresp = uvb_response
-        
+        self._uvacalc = self._uvbcalc = None
+
         # Init I2C
         self._i2c = I2CDevice(i2c_bus, _VEML6075_ADDR)
         self._buffer = bytearray(3)
@@ -115,9 +113,9 @@ class VEML6075:
 
         # shut down
         self._write_register(_REG_CONF, 0x01)
-        
+
         # Set integration time
-        self.integration_time = integration_time          
+        self.integration_time = integration_time
 
         # enable
         conf = self._read_register(_REG_CONF)
@@ -126,11 +124,12 @@ class VEML6075:
         conf &= ~0x01  # Power on
         self._write_register(_REG_CONF, conf)
 
-    def take_reading(self):
+    def _take_reading(self):
+        """Perform a full reading and calculation of all UV calibrated values"""
         time.sleep(0.1)
         uva = self._read_register(_REG_UVA)
         uvb = self._read_register(_REG_UVB)
-        dark = self._read_register(_REG_DARK)
+        #dark = self._read_register(_REG_DARK)
         uvcomp1 = self._read_register(_REG_UVCOMP1)
         uvcomp2 = self._read_register(_REG_UVCOMP2)
         # Equasion 1 & 2 in App note, without 'golden sample' calibration
@@ -141,28 +140,35 @@ class VEML6075:
 
     @property
     def uva(self):
-        self.take_reading()
+        """The calibrated UVA reading, in 'counts' over the sample period"""
+        self._take_reading()
         return self._uvacalc
 
     @property
     def uvb(self):
-        self.take_reading()
+        """The calibrated UVB reading, in 'counts' over the sample period"""
+        self._take_reading()
         return self._uvbcalc
 
     @property
     def uv_index(self):
-        self.take_reading()
+        """The calculated UV Index"""
+        self._take_reading()
         return ((self._uvacalc * self._uvaresp) + (self._uvbcalc * self._uvbresp)) / 2
 
     @property
     def integration_time(self):
+        """The amount of time the VEML is sampling data for, in millis"""
         key = (self._read_register(_REG_CONF) >> 4) & 0x7
-        for k,v in enumerate(_VEML6075_UV_IT):
+        for k, val in enumerate(_VEML6075_UV_IT):
             if key == k:
-                return v
+                return val
+        raise RuntimeError("Invalid integration time")
 
     @integration_time.setter
     def integration_time(self, val):
+        """Set how long the VEML samples data.
+        Can be 50, 100, 200, 400 or 800ms"""
         if not val in _VEML6075_UV_IT.keys():
             raise RuntimeError("Invalid integration time")
         conf = self._read_register(_REG_CONF)
@@ -170,16 +176,17 @@ class VEML6075:
         conf |= _VEML6075_UV_IT[val] << 4
         self._write_register(_REG_CONF, conf)
 
-    
 
     def _read_register(self, register):
+        """Read a 16-bit value from the `register` location"""
         self._buffer[0] = register
         with self._i2c as i2c:
             i2c.write_then_readinto(self._buffer, self._buffer,
                                     out_end=1, in_end=2, stop=False)
-        return (self._buffer[1] << 8 | self._buffer[0])
+        return (self._buffer[1] << 8) | self._buffer[0]
 
     def _write_register(self, register, value):
+        """Write a 16-bit value to the `register` location"""
         self._buffer[0] = register
         self._buffer[1] = value
         self._buffer[2] = value >> 8
