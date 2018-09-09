@@ -74,12 +74,12 @@ class VEML6075:
     Driver base for the VEML6075 UV Light Sensor
     :param i2c_bus: The `busio.I2C` object to use. This is the only required parameter.
     :param int integration_time: The integration time you'd like to set initially. Availble
-                         options - each in milliseconds: 50, 100, 200, 400, 800.
-                         The higher the '_x_' value, the more accurate
-                         the reading is (at the cost of less samples per reading).
-                         Defaults to 100ms if parameter not passed. To change
-                         setting after intialization, use
-                         ``[veml6075].integration_time = new_it_value``.
+    options - each in milliseconds: 50, 100, 200, 400, 800.
+    The higher the '_x_' value, the more accurate
+    the reading is (at the cost of less samples per reading).
+    Defaults to 100ms if parameter not passed. To change
+    setting after intialization, use
+    ``[veml6075].integration_time = new_it_value``.
     :param bool high_dynamic: whether to put sensor in 'high dynamic setting' mode
     :param float uva_a_coef: the UVA visible coefficient
     :param float uva_b_coef: the UVA IR coefficient
