@@ -1,34 +1,31 @@
-# This is a common .travis.yml for generating library release zip files for
-# CircuitPython library releases using circuitpython-build-tools.
-# See https://github.com/adafruit/circuitpython-build-tools for detailed setup
-# instructions.
-
 dist: trusty
 sudo: false
 language: python
 python:
-    - "3.6"
-
+- '3.6'
 cache:
-    pip: true
-
+  pip: true
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
+- provider: releases
+  api_key: "$GITHUB_TOKEN"
   file_glob: true
-  file: $TRAVIS_BUILD_DIR/bundles/*
+  file: "$TRAVIS_BUILD_DIR/bundles/*"
   skip_cleanup: true
   overwrite: true
+- provider: pypi
+  user: adafruit-travis
   on:
     tags: true
-
+  password:
+    secure: LMZEsq+18sFqXq5rx3FyjdevHm+w67CmDwE0WUI8Nd07Rf0796A92V+gXGLN6TznpkVWAJUgCSwhLKsDATe0VNv4t0tk/6KVGq/KhVIcVIeWyYMW0hqdAhVt9K5PLxsWec5m+ya3f9oB/r/9D+ZywKPZQNNq+C5sLzfTAxF+7/dLpv82pjxY3XUPhh0i4lO6WW+l0pfDfMGH466uyYt5XVnK/Gd5XDF8OBVJK6NHk+BVhiRZSN20Lkz8UNjf1Bq7Bya+v58IWYffHat3hfMHTEVX4w0EHoAhdkVPibIGGDhwdlJqD5r+OMQHUkpCi3KYxuwMFPoYa6Di0Grju2LNK2eXw2Toh/DC++5JzXktTifwJUovhTUlcrxCMT5UtlyOEh3+UK/cmSJDMpZDY68Ghc+02pmq1zJ6cPGUKtda7Or3O6DnxhTtCyVti0JhiadB6MvHOyeuKlbu+4QMa+e9m8Xx/7w/ThU2I0VkEnSM7RYP3esWdCU6i/ROdVr1kmoLsIMiV2nW8EQnS0qL0nmKR7oDDwTvcbwjq+fzVe6g9+lmu4xf3DdwES9QG5TNRFRW9qszP9x826uQx5zSf76EslEKjLwg3sAU9JLadJ5sOlfA0HvkLSSIdCAn8OQvd4exTycQ4DkRfPWqERCN4OKwNyN5l2IubADLr+5AeA+B0/4=
 install:
-  - pip install -r requirements.txt
-  - pip install circuitpython-build-tools Sphinx sphinx-rtd-theme
-  - pip install --force-reinstall pylint==1.9.2
-
+- pip install -r requirements.txt
+- pip install circuitpython-build-tools Sphinx sphinx-rtd-theme
+- pip install --force-reinstall pylint==1.9.2
 script:
-  - pylint adafruit_veml6075.py
-  - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace examples/*.py)
-  - circuitpython-build-bundles --filename_prefix adafruit-circuitpython-veml6075 --library_location .
-  - cd docs && sphinx-build -E -W -b html . _build/html
+- pylint adafruit_veml6075.py
+- ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace
+  examples/*.py)
+- circuitpython-build-bundles --filename_prefix adafruit-circuitpython-veml6075 --library_location
+  .
+- cd docs && sphinx-build -E -W -b html . _build/html && cd ..
