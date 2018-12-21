@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.org/adafruit/Adafruit_CircuitPython_VEML6075.svg?branch=master
-    :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_VEML6075
+.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_VEML6075.svg?branch=master
+    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_VEML6075
     :alt: Build Status
 
 CircuitPython library to support VEML6075 UVA & UVB sensor.
