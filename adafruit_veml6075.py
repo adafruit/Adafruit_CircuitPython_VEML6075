@@ -180,8 +180,7 @@ class VEML6075:
         """Read a 16-bit value from the `register` location"""
         self._buffer[0] = register
         with self._i2c as i2c:
-            i2c.write_then_readinto(self._buffer, self._buffer,
-                                    out_end=1, in_end=2, stop=False)
+            i2c.write_then_readinto(self._buffer, self._buffer, out_end=1, in_end=2)
         return (self._buffer[1] << 8) | self._buffer[0]
 
     def _write_register(self, register, value):
