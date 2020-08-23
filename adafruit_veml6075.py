@@ -50,7 +50,6 @@ import time
 from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
 
-# pylint: disable=bad-whitespace
 _VEML6075_ADDR = const(0x10)
 
 _REG_CONF = const(0x00)
@@ -63,7 +62,6 @@ _REV_ID = const(0x0C)
 
 # Valid constants for UV Integration Time
 _VEML6075_UV_IT = {50: 0x00, 100: 0x01, 200: 0x02, 400: 0x03, 800: 0x04}
-# pylint: enable=bad-whitespace
 
 
 class VEML6075:
