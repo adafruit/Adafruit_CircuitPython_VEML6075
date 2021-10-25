@@ -69,6 +69,11 @@ Usage Example
 	    print(veml.uv_index)
 	    time.sleep(1)
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/veml6075/en/latest/>`_.
+
 Contributing
 ============
 
