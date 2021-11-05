@@ -155,7 +155,9 @@ class VEML6075:
 
     @integration_time.setter
     def integration_time(self, val):
-        if not val in _VEML6075_UV_IT.keys():
+        if (  # pylint: disable=consider-iterating-dictionary
+            not val in _VEML6075_UV_IT.keys()
+        ):
             raise RuntimeError("Invalid integration time")
         conf = self._read_register(_REG_CONF)
         conf &= ~0b01110000  # mask off bits 4:6
