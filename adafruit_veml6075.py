@@ -34,7 +34,7 @@ from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
 
 try:
-    from typing import Union
+    from typing import Union  # pylint: disable=unused-import
     from busio import I2C
 except ImportError:
     pass
@@ -102,7 +102,7 @@ class VEML6075:
         # read ID!
         veml_id = self._read_register(_REV_ID)
         if veml_id != 0x26:
-            raise RuntimeError(f"Incorrect VEML6075 ID {hex(veml_id)}")
+            raise RuntimeError(f"Incorrect VEML6075 ID {hex(veml_id).upper()}")
 
         # shut down
         self._write_register(_REG_CONF, 0x01)
@@ -150,7 +150,7 @@ class VEML6075:
         return ((self._uvacalc * self._uvaresp) + (self._uvbcalc * self._uvbresp)) / 2
 
     @property
-    def integration_time(self) -> Union[None, int]:
+    def integration_time(self) -> int:
         """The amount of time the VEML is sampling data for, in millis.
         Valid times are 50, 100, 200, 400 or 800ms"""
         key = (self._read_register(_REG_CONF) >> 4) & 0x7
