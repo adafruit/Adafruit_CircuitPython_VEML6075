@@ -150,7 +150,7 @@ class VEML6075:
         return ((self._uvacalc * self._uvaresp) + (self._uvbcalc * self._uvbresp)) / 2
 
     @property
-    def integration_time(self) -> Union(None, int):
+    def integration_time(self) -> Union[None, int]:
         """The amount of time the VEML is sampling data for, in millis.
         Valid times are 50, 100, 200, 400 or 800ms"""
         key = (self._read_register(_REG_CONF) >> 4) & 0x7
