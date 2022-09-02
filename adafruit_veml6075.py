@@ -33,6 +33,12 @@ import time
 from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
 
+try:
+    from typing import Union
+    from busio import I2C
+except ImportError:
+    pass
+
 _VEML6075_ADDR = const(0x10)
 
 _REG_CONF = const(0x00)
@@ -69,17 +75,17 @@ class VEML6075:
 
     def __init__(
         self,
-        i2c_bus,
+        i2c_bus: I2C,
         *,
-        integration_time=50,
-        high_dynamic=True,
-        uva_a_coef=2.22,
-        uva_b_coef=1.33,
-        uvb_c_coef=2.95,
-        uvb_d_coef=1.74,
-        uva_response=0.001461,
-        uvb_response=0.002591
-    ):
+        integration_time: int = 50,
+        high_dynamic: bool = True,
+        uva_a_coef: float = 2.22,
+        uva_b_coef: float = 1.33,
+        uvb_c_coef: float = 2.95,
+        uvb_d_coef: float = 1.74,
+        uva_response: float = 0.001461,
+        uvb_response: float = 0.002591,
+    ) -> None:
         # Set coefficients
         self._a = uva_a_coef
         self._b = uva_b_coef
@@ -96,7 +102,7 @@ class VEML6075:
         # read ID!
         veml_id = self._read_register(_REV_ID)
         if veml_id != 0x26:
-            raise RuntimeError("Incorrect VEML6075 ID 0x%02X" % veml_id)
+            raise RuntimeError(f"Incorrect VEML6075 ID {hex(veml_id)}")
 
         # shut down
         self._write_register(_REG_CONF, 0x01)
@@ -111,7 +117,7 @@ class VEML6075:
         conf &= ~0x01  # Power on
         self._write_register(_REG_CONF, conf)
 
-    def _take_reading(self):
+    def _take_reading(self) -> None:
         """Perform a full reading and calculation of all UV calibrated values"""
         time.sleep(0.1)
         uva = self._read_register(_REG_UVA)
@@ -126,25 +132,25 @@ class VEML6075:
         #      (uva, uvb, uvcomp1, uvcomp2, dark))
 
     @property
-    def uva(self):
+    def uva(self) -> float:
         """The calibrated UVA reading, in 'counts' over the sample period"""
         self._take_reading()
         return self._uvacalc
 
     @property
-    def uvb(self):
+    def uvb(self) -> float:
         """The calibrated UVB reading, in 'counts' over the sample period"""
         self._take_reading()
         return self._uvbcalc
 
     @property
-    def uv_index(self):
+    def uv_index(self) -> float:
         """The calculated UV Index"""
         self._take_reading()
         return ((self._uvacalc * self._uvaresp) + (self._uvbcalc * self._uvbresp)) / 2
 
     @property
-    def integration_time(self):
+    def integration_time(self) -> Union(None, int):
         """The amount of time the VEML is sampling data for, in millis.
         Valid times are 50, 100, 200, 400 or 800ms"""
         key = (self._read_register(_REG_CONF) >> 4) & 0x7
@@ -154,7 +160,7 @@ class VEML6075:
         raise RuntimeError("Invalid integration time")
 
     @integration_time.setter
-    def integration_time(self, val):
+    def integration_time(self, val: int) -> None:
         if (  # pylint: disable=consider-iterating-dictionary
             not val in _VEML6075_UV_IT.keys()
         ):
@@ -164,14 +170,14 @@ class VEML6075:
         conf |= _VEML6075_UV_IT[val] << 4
         self._write_register(_REG_CONF, conf)
 
-    def _read_register(self, register):
+    def _read_register(self, register: int) -> int:
         """Read a 16-bit value from the `register` location"""
         self._buffer[0] = register
         with self._i2c as i2c:
             i2c.write_then_readinto(self._buffer, self._buffer, out_end=1, in_end=2)
         return (self._buffer[1] << 8) | self._buffer[0]
 
-    def _write_register(self, register, value):
+    def _write_register(self, register: int, value: int) -> None:
         """Write a 16-bit value to the `register` location"""
         self._buffer[0] = register
         self._buffer[1] = value
