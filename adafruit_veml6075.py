@@ -34,7 +34,7 @@ from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
 
 try:
-    from typing import Union  # pylint: disable=unused-import
+    import typing  # pylint: disable=unused-import
     from busio import I2C
 except ImportError:
     pass
