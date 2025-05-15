@@ -30,11 +30,13 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_VEML6075.git"
 # imports
 
 import time
+
 from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
 
 try:
-    import typing  # pylint: disable=unused-import
+    import typing
+
     from busio import I2C
 except ImportError:
     pass
@@ -162,9 +164,7 @@ class VEML6075:
 
     @integration_time.setter
     def integration_time(self, val: int) -> None:
-        if (  # pylint: disable=consider-iterating-dictionary
-            not val in _VEML6075_UV_IT.keys()
-        ):
+        if not val in _VEML6075_UV_IT.keys():
             raise RuntimeError("Invalid integration time")
         conf = self._read_register(_REG_CONF)
         conf &= ~0b01110000  # mask off bits 4:6
